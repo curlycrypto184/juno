@@ -2,18 +2,31 @@ package types
 
 import (
 	"fmt"
+	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 )
 
+// GlobalFee params default values .
+const (
+	// 1 day default override period. Governance can increase this
+	DefaultOverridePeriod time.Duration = time.Hour * 24
+)
+
 // ParamStoreKeyMinGasPrices store key
-var ParamStoreKeyMinGasPrices = []byte("MinimumGasPricesParam")
+var (
+	ParamStoreKeyMinGasPrices = []byte("MinimumGasPricesParam")
+	ParamStoreKeyWhitelist    = []byte("WhitelistParam")
+)
 
 // DefaultParams returns default parameters
 func DefaultParams() Params {
-	return Params{MinimumGasPrices: sdk.DecCoins{}}
+	return Params{
+		MinimumGasPrices:    sdk.DecCoins{},
+		OverridePeriodHours: uint64(DefaultOverridePeriod.Seconds()),
+	}
 }
 
 func ParamKeyTable() paramtypes.KeyTable {

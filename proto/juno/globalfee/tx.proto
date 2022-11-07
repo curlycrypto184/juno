@@ -1,0 +1,35 @@
+syntax = "proto3";
+package juno.globalfee;
+
+import "gogoproto/gogo.proto";
+import "cosmos/base/v1beta1/coin.proto";
+
+option go_package = "github.com/CosmosContracts/juno/x/globalfee/types";
+
+// Msg is the cosmos.group.v1 Msg service.
+service Msg {
+  // TODO
+  rpc TemporarilyOverrideFees(MsgTemporarilyOverrideFees)
+      returns (MsgTemporarilyOverrideFeesResponse);
+}
+
+// TODO
+message MsgTemporarilyOverrideFees {
+  // TODO
+  repeated cosmos.base.v1beta1.Coin coins = 1 [
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
+  ];
+
+  // string FromAdd
+  string from_address = 2;
+
+  // End time defines when this override will expire in unix seconds. TODO: is
+  // this allowed because it is a time and machines may be different?
+  uint64 end_time = 3;
+}
+
+// TODO
+message MsgTemporarilyOverrideFeesResponse {
+  // TODO
+}

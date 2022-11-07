@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package juno.globalfee;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/CosmosContracts/juno/x/globalfee/types";
+
+// TODO:
+message AccountRecord {
+  // TODO:
+  option (gogoproto.goproto_getters) = true;
+  option (gogoproto.goproto_stringer) = true;
+
+  string account = 1;
+  uint64 allowed_bypasses = 2;
+}

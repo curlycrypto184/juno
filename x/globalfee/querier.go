@@ -29,3 +29,13 @@ func (g Querier) MinimumGasPrices(stdCtx context.Context, _ *types.QueryMinimumG
 		MinimumGasPrices: minGasPrices,
 	}, nil
 }
+
+// WhiteList return wallet accounts allowed to override fees
+func (g Querier) WhiteList(c context.Context, _ *types.QueryWhiteListRequest) (*types.QueryWhiteListResponse, error) {
+	var accounts types.AccountRecords
+	ctx := sdk.UnwrapSDKContext(c)
+	if g.paramSource.Has(ctx, types.ParamStoreKeyMinGasPrices) {
+		g.paramSource.Get(ctx, types.ParamStoreKeyMinGasPrices, &accounts)
+	}
+	return &types.QueryWhiteListResponse{AccountRecord: accounts}, nil
+}

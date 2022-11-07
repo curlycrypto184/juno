@@ -20,6 +20,8 @@ import (
 
 	"github.com/CosmosContracts/juno/v11/x/globalfee/client/cli"
 	"github.com/CosmosContracts/juno/v11/x/globalfee/types"
+
+	"github.com/CosmosContracts/juno/v11/x/globalfee/keeper"
 )
 
 var (
@@ -79,6 +81,8 @@ func (a AppModuleBasic) RegisterLegacyAminoCodec(amino *codec.LegacyAmino) {
 type AppModule struct {
 	AppModuleBasic
 	paramSpace paramstypes.Subspace
+
+	globalfee keeper.GlobalFeeKeeper
 }
 
 // NewAppModule constructor
@@ -122,11 +126,16 @@ func (a AppModule) RegisterServices(cfg module.Configurator) {
 	types.RegisterQueryServer(cfg.QueryServer(), NewQuerier(a.paramSpace))
 }
 
-func (a AppModule) BeginBlock(context sdk.Context, block abci.RequestBeginBlock) {
+func (a AppModule) BeginBlock(ctx sdk.Context, block abci.RequestBeginBlock) {
 }
 
-func (a AppModule) EndBlock(context sdk.Context, block abci.RequestEndBlock) []abci.ValidatorUpdate {
-	return nil
+func (a AppModule) EndBlock(ctx sdk.Context, block abci.RequestEndBlock) []abci.ValidatorUpdate {
+
+	if err := EndBlocker(ctx, a.globalfee); err != nil {
+		panic(err)
+	}
+
+	return []abci.ValidatorUpdate{}
 }
 
 // ConsensusVersion is a sequence number for state-breaking change of the
