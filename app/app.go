@@ -98,6 +98,8 @@ import (
 	tmjson "github.com/tendermint/tendermint/libs/json"
 
 	"github.com/CosmosContracts/juno/v11/x/globalfee"
+	globalfeekeeper "github.com/CosmosContracts/juno/v11/x/globalfee/keeper"
+	globalfeetypes "github.com/CosmosContracts/juno/v11/x/globalfee/types"
 
 	"github.com/CosmWasm/wasmd/x/wasm"
 	wasmclient "github.com/CosmWasm/wasmd/x/wasm/client"
@@ -283,6 +285,7 @@ type App struct {
 	TransferKeeper   ibctransferkeeper.Keeper
 	AuthzKeeper      authzkeeper.Keeper
 	FeeGrantKeeper   feegrantkeeper.Keeper
+	GlobalFeeKeeper  globalfeekeeper.Keeper
 
 	ICAHostKeeper icahostkeeper.Keeper
 
@@ -386,6 +389,8 @@ func New(
 		app.GetSubspace(crisistypes.ModuleName), invCheckPeriod, app.BankKeeper, authtypes.FeeCollectorName,
 	)
 	app.UpgradeKeeper = upgradekeeper.NewKeeper(skipUpgradeHeights, keys[upgradetypes.StoreKey], appCodec, homePath, nil)
+
+	app.GlobalFeeKeeper = globalfeekeeper.NewKeeper(appCodec, keys[globalfeetypes.StoreKey], app.GetSubspace(globalfeetypes.ModuleName))
 
 	// upgrade handlers
 	cfg := module.NewConfigurator(appCodec, app.MsgServiceRouter(), app.GRPCQueryRouter())
@@ -531,7 +536,7 @@ func New(
 		params.NewAppModule(app.ParamsKeeper),
 		authzmodule.NewAppModule(appCodec, app.AuthzKeeper, app.AccountKeeper, app.BankKeeper, app.interfaceRegistry),
 		transferModule,
-		globalfee.NewAppModule(app.GetSubspace(globalfee.ModuleName)),
+		globalfee.NewAppModule(app.GetSubspace(globalfee.ModuleName), app.GlobalFeeKeeper),
 		icaModule,
 		// this line is used by starport scaffolding # stargate/app/appModule
 		wasm.NewAppModule(appCodec, &app.wasmKeeper, app.StakingKeeper, app.AccountKeeper, app.BankKeeper),
@@ -727,7 +732,7 @@ func New(
 		wasm.NewAppModule(appCodec, &app.wasmKeeper, app.StakingKeeper, app.AccountKeeper, app.BankKeeper),
 		ibc.NewAppModule(app.IBCKeeper),
 		transferModule,
-		globalfee.NewAppModule(app.GetSubspace(globalfee.ModuleName)),
+		globalfee.NewAppModule(app.GetSubspace(globalfee.ModuleName), app.GlobalFeeKeeper),
 	)
 
 	app.sm.RegisterStoreDecoders()

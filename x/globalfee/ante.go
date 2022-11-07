@@ -43,6 +43,19 @@ func (g GlobalMinimumChainFeeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, s
 
 		var minGasPrices sdk.DecCoins
 		g.paramSource.Get(ctx, types.ParamStoreKeyMinGasPrices, &minGasPrices)
+
+		var overriddenFees sdk.DecCoins
+		g.paramSource.Get(ctx, types.ParamStoreOverrideFees, &overriddenFees)
+
+		// overrides gov gated minGasPrices -> the temporarily overridden fees from a gov certified account
+		for _, minGasPrice := range minGasPrices {
+			for _, overriddenFee := range overriddenFees {
+				if minGasPrice.Denom == overriddenFee.Denom {
+					minGasPrice.Amount = overriddenFee.Amount
+				}
+			}
+		}
+
 		if !minGasPrices.IsZero() {
 			requiredFees := make(sdk.Coins, len(minGasPrices))
 

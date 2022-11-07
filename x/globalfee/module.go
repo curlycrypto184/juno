@@ -68,7 +68,7 @@ func (a AppModuleBasic) RegisterGRPCGatewayRoutes(clientCtx client.Context, mux 
 }
 
 func (a AppModuleBasic) GetTxCmd() *cobra.Command {
-	return nil
+	return cli.NewTxCmd()
 }
 
 func (a AppModuleBasic) GetQueryCmd() *cobra.Command {
@@ -82,16 +82,20 @@ type AppModule struct {
 	AppModuleBasic
 	paramSpace paramstypes.Subspace
 
-	globalfee keeper.GlobalFeeKeeper
+	globalfee keeper.Keeper
 }
 
 // NewAppModule constructor
-func NewAppModule(paramSpace paramstypes.Subspace) *AppModule {
+// func NewAppModule(paramSpace paramstypes.Subspace) *AppModule {
+func NewAppModule(paramSpace paramstypes.Subspace, keeper keeper.Keeper) *AppModule {
+	// TODO: Um so like, minimize this?
 	if !paramSpace.HasKeyTable() {
 		paramSpace = paramSpace.WithKeyTable(types.ParamKeyTable())
 	}
-
-	return &AppModule{paramSpace: paramSpace}
+	return &AppModule{
+		paramSpace: paramSpace,
+		globalfee:  keeper,
+	}
 }
 
 func (a AppModule) InitGenesis(ctx sdk.Context, marshaler codec.JSONCodec, message json.RawMessage) []abci.ValidatorUpdate {
@@ -130,11 +134,10 @@ func (a AppModule) BeginBlock(ctx sdk.Context, block abci.RequestBeginBlock) {
 }
 
 func (a AppModule) EndBlock(ctx sdk.Context, block abci.RequestEndBlock) []abci.ValidatorUpdate {
-
-	if err := EndBlocker(ctx, a.globalfee); err != nil {
-		panic(err)
-	}
-
+	// TODO:
+	// if err := EndBlocker(ctx, a.globalfee); err != nil {
+	// 	panic(err)
+	// }
 	return []abci.ValidatorUpdate{}
 }
 

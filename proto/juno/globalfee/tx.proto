@@ -33,3 +33,16 @@ message MsgTemporarilyOverrideFees {
 message MsgTemporarilyOverrideFeesResponse {
   // TODO
 }
+
+// TODO
+message MsgAddOverride {
+  // string
+  string address = 1;
+  // overrides
+  uint64 amount = 2;
+}
+
+// TODO
+message MsgAddOverrideResponse {
+  // TODO
+}

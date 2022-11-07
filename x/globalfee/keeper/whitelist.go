@@ -5,10 +5,10 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-func (k GlobalFeeKeeper) IterateWhitelist(ctx sdk.Context, cb func(record types.AccountRecord) (stop bool)) {
+func (k Keeper) IterateWhitelist(ctx sdk.Context, cb func(record types.AccountRecord) (stop bool)) {
 	store := ctx.KVStore(k.storeKey)
 
-	iterator := sdk.KVStorePrefixIterator(store, types.KeyWhiteList)
+	iterator := sdk.KVStorePrefixIterator(store, types.ParamStoreKeyWhitelist)
 
 	for ; iterator.Valid(); iterator.Next() {
 		var record types.AccountRecord
@@ -22,7 +22,7 @@ func (k GlobalFeeKeeper) IterateWhitelist(ctx sdk.Context, cb func(record types.
 	}
 }
 
-func (k GlobalFeeKeeper) GetWhiteList(ctx sdk.Context) (records types.AccountRecords) {
+func (k Keeper) GetWhiteList(ctx sdk.Context) (records types.AccountRecords) {
 	k.IterateWhitelist(ctx, func(record types.AccountRecord) bool {
 		records = append(records, record)
 		return false

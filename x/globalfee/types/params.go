@@ -19,6 +19,10 @@ const (
 var (
 	ParamStoreKeyMinGasPrices = []byte("MinimumGasPricesParam")
 	ParamStoreKeyWhitelist    = []byte("WhitelistParam")
+	// KeyWhiteList is the key to use for the keeper store .
+	// KeyWhiteList = []byte("KeyWhitelist")
+	// The actual fees themselfs when for use within the keeper store .
+	ParamStoreOverrideFees = []byte("OverrideFees")
 )
 
 // DefaultParams returns default parameters

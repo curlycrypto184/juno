@@ -13,11 +13,3 @@ const (
 	QueryParameters = "parameters"
 	QueryWhiteList  = "whiteList"
 )
-
-var (
-	// KeyWhiteList is the key to use for the keeper store .
-	KeyWhiteList = []byte{0x00}
-
-	// The actual fees themselfs when for use within the keeper store .
-	OverrideFees = []byte{0x01}
-)

@@ -13,15 +13,15 @@ import (
 )
 
 type msgServer struct {
-	GlobalFeeKeeper
+	Keeper
 }
 
 var _ types.MsgServer = msgServer{}
 
 // NewMsgServerImpl returns an implementation of the exp MsgServer interface
 // for the provided Keeper.
-func NewMsgServerImpl(keeper GlobalFeeKeeper) types.MsgServer {
-	return &msgServer{GlobalFeeKeeper: keeper}
+func NewMsgServerImpl(keeper Keeper) types.MsgServer {
+	return &msgServer{Keeper: keeper}
 }
 
 func (k msgServer) TemporarilyOverrideFees(goCtx context.Context, msg *types.MsgTemporarilyOverrideFees) (*types.MsgTemporarilyOverrideFeesResponse, error) {

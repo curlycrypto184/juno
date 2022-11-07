@@ -15,3 +15,10 @@ message AccountRecord {
   string account = 1;
   uint64 allowed_bypasses = 2;
 }
+
+// WhitelistAccounts is the storage mechanism for many possible accounts & the
+// number of times they can bypass the fee (given via governance)
+message WhitelistAccounts {
+  // TODO:
+  repeated AccountRecord records = 1;
+}
